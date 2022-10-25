@@ -1,0 +1,35 @@
+
+#https://yuzar-blog.netlify.app/posts/2022-01-30-rmanova/
+.libPaths("C:/Program Files/R/R-4.1.0/library")
+install.packages(`PMCMRplus`)
+
+library(tidyverse)
+library(datarium)
+
+View(selfesteem)
+head(selfesteem) #운동을 하면서 time에 따른  자존감점수
+
+# make long format
+d <- selfesteem %>%
+  pivot_longer(-id, names_to = "time", values_to = "score")
+
+
+#귀무가설 : 3종류의 평균값이 차이가 없다. (아노바 분석)
+library(ggstatsplot)
+
+
+ggwithinstats(
+  data = d,
+  x    = time, 
+  y    = score, 
+  outlier.tagging = T,
+  type = "robust", 
+  p.adjust.method = "bonferroni", 
+  pairwise.display = "all",
+  # pairwise.comparisons = FALSE,   
+  results.subtitle = F,
+  bf.message = F
+) + 
+  ylab("selfesteem score")+
+  theme_classic()+
+  theme(legend.position = "top")
